@@ -51,21 +51,7 @@ db.estaciones.deleteOne({ "NOMBRE ESTACION": "Estación Demo" });
 // Precipitación mayor a 50 mm
 db.estaciones.find({ "PARAMETRO(TIPO)": "PRECIPITACIÓN", VALOR: { $gt: 50 } });
 
-// Caudal entre 10 y 30 m³/s
-db.estaciones.find({ "PARAMETRO(TIPO)": "CAUDAL", VALOR: { $gte: 10, $lte: 30 } });
 
-// Condición OR: precipitación > 80 o caudal > 40
-db.estaciones.find({
-  $or: [
-    { "PARAMETRO(TIPO)": "PRECIPITACIÓN", VALOR: { $gt: 80 } },
-    { "PARAMETRO(TIPO)": "CAUDAL", VALOR: { $gt: 40 } }
-  ]
-});
-
-// Registros de un rango de fechas (si FECHA se mantiene como texto)
-db.estaciones.find({
-  FECHA: { $gte: "2025 Nov 01 00:00:00 AM", $lt: "2025 Dec 01 00:00:00 AM" },
-  "PARAMETRO(TIPO)": "PRECIPITACIÓN"
 });
 
 
@@ -94,15 +80,6 @@ db.estaciones.aggregate([
 ]);
 
 // Máximos y mínimos de precipitación por estación
-db.estaciones.aggregate([
-  { $match: { "PARAMETRO(TIPO)": "PRECIPITACIÓN" } },
-  { $group: {
-      _id: "$NOMBRE ESTACION",
-      maxPrecipitacion: { $max: "$VALOR" },
-      minPrecipitacion: { $min: "$VALOR" }
-    }
-  }
-]);
 
 // Promedio de precipitación por fecha
 db.estaciones.aggregate([
@@ -111,5 +88,3 @@ db.estaciones.aggregate([
   { $sort: { _id: 1 } }
 ]);
 
-// Nota: Si VALOR está en texto en algunos registros, considera filtrar solo números:
-// { $match: { VALOR: { $type: "number" }, "PARAMETRO(TIPO)": "PRECIPITACIÓN" } }
